@@ -1,6 +1,9 @@
 <script setup>
-import { RouterLink } from 'vue-router';
-import { computed } from 'vue';
+import { RouterLink, useRouter } from 'vue-router';
+import { computed, ref } from 'vue';
+import { logout } from '@/services/auth.service';
+import { useAuthorizationStore } from '@/stores/authorization';
+import ConfirmationModal from '@/components/ui/ConfirmationModal.vue';
 
 const props = defineProps({
     isOpen: {
@@ -10,6 +13,11 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close']);
+const router = useRouter();
+const authStore = useAuthorizationStore();
+
+const showLogoutModal = ref(false);
+const loadingLogout = ref(false);
 
 // Example navigation items - in a real app these might come from a store or prop
 const navigation = [
@@ -24,6 +32,17 @@ const sidebarClasses = computed(() => {
         props.isOpen ? 'translate-x-0' : '-translate-x-full',
     ].join(' ');
 });
+
+const handleLogout = async () => {
+    loadingLogout.value = true;
+    const response = await logout();
+    console.log('Logout Response:', response);
+
+    loadingLogout.value = false;
+    showLogoutModal.value = false;
+    authStore.clearSession();
+    router.push({ name: 'login' });
+}
 </script>
 
 <template>
@@ -50,7 +69,7 @@ const sidebarClasses = computed(() => {
 
         <!-- Logout (Bottom) -->
         <div class="absolute bottom-0 w-full border-t border-gray-700 p-4">
-            <button
+            <button @click="showLogoutModal = true"
                 class="group flex w-full items-center rounded-md px-2 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
                 <svg class="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-300" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -61,6 +80,11 @@ const sidebarClasses = computed(() => {
             </button>
         </div>
     </aside>
+
+    <!-- Logout Confirmation Modal -->
+    <ConfirmationModal :is-open="showLogoutModal" title="Konfirmasi Logout"
+        message="Apakah Anda yakin ingin mengakhiri sesi?" confirm-text="Ya, Logout" cancel-text="Batal"
+        :loading="loadingLogout" @confirm="handleLogout" @close="showLogoutModal = false" />
 
     <!-- Mobile Overlay -->
     <div v-if="isOpen" class="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 transition-opacity md:hidden"

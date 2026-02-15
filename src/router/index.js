@@ -15,7 +15,8 @@ const router = createRouter({
 
 // Navigation Guard
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = false; // TODO: Replace with real auth check (e.g., localStorage token)
+  const token = localStorage.getItem('token');
+  const isAuthenticated = !!token;
 
   if (to.meta.requiresAuth && !isAuthenticated) {
     next({ name: 'login' });

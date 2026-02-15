@@ -1,30 +1,53 @@
 <script setup>
 import { ref } from 'vue';
-import { RouterLink, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import TextInput from '@/components/ui/TextInput.vue';
 import Button from '@/components/ui/Button.vue';
+import { login } from '@/services/auth.service'; // Import login service
+import { useAuthorizationStore } from '@/stores/authorization'; // Import auth store
+import { swallAlert } from '@/plugins/sweetalert2';
 
 const router = useRouter();
+const authStore = useAuthorizationStore();
 
 const form = ref({
     email: '',
     password: '',
 });
 
+const data = ref('')
+
 const loading = ref(false);
 
 const handleLogin = async () => {
     loading.value = true;
-    // Simulate API call
-    setTimeout(() => {
-        loading.value = false;
-        // For now, just redirect to dashboard
-        // In real app, store token here
-        alert('Login successful! (Simulation)');
-        // Force redirect for demo since we haven't implemented real auth state yet
-        // In real app, we would update auth store state
-        router.push({ name: 'dashboard' });
-    }, 1000);
+
+    const response = await login({
+        email: form.value.email,
+        password: form.value.password
+    });
+    console.log(response);
+
+    const data = response.data.data
+    console.log(data);
+    loading.value = false;
+    if (data) {
+        // Show success alert
+        swallAlert('success', {
+            title: 'Login Berhasil',
+            message: 'Selamat datang di sistem tiket',
+            btnOk: 'Ok', // Button text
+            isNotif: true, // Use notification style (toast) if desired, or false for modal
+            callback: () => {
+                authStore.user = response;
+                authStore.token = data;
+                localStorage.setItem('user', JSON.stringify(response));
+                localStorage.setItem('token', data);
+                router.push({ name: 'dashboard' });
+                // console.log('Login Response:', response);
+            }
+        });
+    }
 };
 </script>
 
