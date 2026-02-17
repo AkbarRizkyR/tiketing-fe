@@ -1,13 +1,22 @@
 import Swal from 'sweetalert2'
 
-export const swallAlert = (icon, { title, message, btnOk, callback, isNotif }) => {
+export const swallAlert = (icon, { 
+    title, 
+    message, 
+    btnOk = 'Ok', 
+    callback, 
+    isNotif = false, 
+    showConfirmButton = true, 
+    timer = 3000 
+}) => {
     if (isNotif) {
         Swal.fire({
             icon: icon,
             title: title,
             text: message,
             confirmButtonText: btnOk,
-            timer: 3000,
+            showConfirmButton: showConfirmButton,
+            timer: showConfirmButton ? undefined : timer,
             timerProgressBar: true
         }).then((result) => {
             if ((result.isConfirmed || result.dismiss === Swal.DismissReason.timer) && callback) {
@@ -20,6 +29,7 @@ export const swallAlert = (icon, { title, message, btnOk, callback, isNotif }) =
             title: title,
             text: message,
             confirmButtonText: btnOk,
+            showConfirmButton: showConfirmButton,
             allowOutsideClick: false,
             allowEscapeKey: false
         }).then((result) => {

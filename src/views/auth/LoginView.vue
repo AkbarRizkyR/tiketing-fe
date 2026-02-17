@@ -15,38 +15,39 @@ const form = ref({
     password: '',
 });
 
-const data = ref('')
-
 const loading = ref(false);
 
-const handleLogin = async () => {
+    const handleLogin = async () => {
     loading.value = true;
-
-    const response = await login({
-        email: form.value.email,
-        password: form.value.password
-    });
-    console.log(response);
-
-    const data = response.data.data
-    console.log(data);
-    loading.value = false;
-    if (data) {
-        // Show success alert
-        swallAlert('success', {
-            title: 'Login Berhasil',
-            message: 'Selamat datang di sistem tiket',
-            btnOk: 'Ok', // Button text
-            isNotif: true, // Use notification style (toast) if desired, or false for modal
-            callback: () => {
-                authStore.user = response;
-                authStore.token = data;
-                localStorage.setItem('user', JSON.stringify(response));
-                localStorage.setItem('token', data);
-                router.push({ name: 'dashboard' });
-                // console.log('Login Response:', response);
-            }
+    try {
+        const response = await login({
+            email: form.value.email,
+            password: form.value.password
         });
+        console.log(response);
+
+        if (response) {
+            const data = response.data.data
+            console.log(data);
+            if (data) {
+                swallAlert('success', {
+                    title: 'Login Berhasil',
+                    message: 'Selamat datang di sistem tiket',
+                    timer: 1000,
+                    showConfirmButton: false,
+                    isNotif: true,
+                    callback: () => {
+                        authStore.user = response;
+                        authStore.token = data;
+                        localStorage.setItem('user', JSON.stringify(response));
+                        localStorage.setItem('token', data);
+                        router.push({ name: 'dashboard' });
+                    }
+                });
+            }
+        }
+    } finally {
+        loading.value = false;
     }
 };
 </script>

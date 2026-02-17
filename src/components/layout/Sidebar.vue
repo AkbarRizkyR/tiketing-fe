@@ -1,9 +1,11 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { RouterLink, useRouter } from 'vue-router';
 import { computed, ref } from 'vue';
 import { logout } from '@/services/auth.service';
 import { useAuthorizationStore } from '@/stores/authorization';
 import ConfirmationModal from '@/components/ui/ConfirmationModal.vue';
+import { swallAlert } from '@/plugins/sweetalert2';
 
 const props = defineProps({
     isOpen: {
@@ -12,7 +14,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['close']);
+defineEmits(['close', 'toggle']);
 const router = useRouter();
 const authStore = useAuthorizationStore();
 
@@ -28,7 +30,7 @@ const navigation = [
 
 const sidebarClasses = computed(() => {
     return [
-        'fixed inset-y-0 left-0 z-50 w-64 bg-secondary text-white transition-transform duration-300 ease-in-out md:translate-x-0',
+        'fixed inset-y-0 left-0 z-50 w-64 bg-secondary text-white transition-transform duration-300 ease-in-out',
         props.isOpen ? 'translate-x-0' : '-translate-x-full',
     ].join(' ');
 });
@@ -40,16 +42,42 @@ const handleLogout = async () => {
 
     loadingLogout.value = false;
     showLogoutModal.value = false;
-    authStore.clearSession();
-    router.push({ name: 'login' });
+    
+    swallAlert('success', {
+        title: 'Logout Berhasil',
+        message: 'Anda telah berhasil keluar sistem',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false,
+        isNotif: true,
+        callback: () => {
+             authStore.clearSession();
+             router.push({ name: 'login' });
+        }
+    });
 }
 </script>
 
 <template>
     <aside :class="sidebarClasses">
         <!-- Logo -->
-        <div class="flex h-16 items-center justify-center border-b border-gray-700 bg-secondary px-6">
-            <h1 class="text-xl font-display font-bold text-white">TicketApp</h1>
+        <div class="relative flex h-16 items-center justify-center border-b border-gray-700 bg-secondary px-6">
+            <h1 class="text-xl font-display font-bold text-white">Ticket Support</h1>
+            
+            <!-- Mobile Close Button -->
+            <button @click="$emit('close')" class="absolute right-4 text-gray-400 hover:text-white md:hidden">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <!-- Desktop Collapse Button -->
+            <button @click="$emit('toggle')" 
+                class="absolute -right-3 top-1/2 hidden h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm hover:bg-gray-50 hover:text-gray-700 md:flex transition-transform duration-300">
+                <svg class="h-3 w-3 transform transition-transform duration-300" :class="{ 'rotate-180': !isOpen }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
         </div>
 
         <!-- Navigation -->

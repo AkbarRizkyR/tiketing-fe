@@ -24,6 +24,9 @@ export default async function apiCall(apiCallback) {
                 btnOk: 'Ok',
             })
             return
+        } else if (error.response && error.response.status === 500) {
+            window.location.reload()
+            return
         } else {
             swallAlert('error', {
                 isNotif: true,

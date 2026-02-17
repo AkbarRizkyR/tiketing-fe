@@ -1,27 +1,18 @@
 <template>
     <div class="flex min-h-screen bg-surface">
-        <!-- Left Side - Abstract Gradient (Hidden on mobile) -->
         <div class="hidden w-1/2 relative lg:flex items-center justify-center overflow-hidden bg-secondary">
-            <!-- Decorative Background Elements -->
             <div class="absolute inset-0 bg-linear-to-br from-secondary via-secondary to-primary/20"></div>
-
-            <!-- Abstract Circles/Blobs -->
             <div
                 class="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/30 rounded-full blur-3xl opacity-50">
             </div>
             <div
                 class="absolute bottom-0 right-0 translate-x-1/3 translate-y-1/3 w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl opacity-40">
             </div>
-
-            <!-- Grid Pattern Overlay for Texture -->
             <div class="absolute inset-0 opacity-10"
                 style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 32px 32px;">
             </div>
-
-            <!-- Content Overlay -->
             <div class="relative z-10 w-full max-w-lg px-12 text-center text-white">
                 <div class="mb-8 flex justify-center">
-                    <!-- Icon/Logo Placeholder -->
                     <svg class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -37,8 +28,6 @@
                     experiences.
                 </p>
             </div>
-
-            <!-- Wave Animation (Bottom) -->
             <div class="absolute bottom-0 left-0 right-0 z-0 opacity-40">
                 <svg class="w-full" viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill="#10b981" fill-opacity="0.3"
@@ -60,12 +49,9 @@
                 </svg>
             </div>
         </div>
-
-        <!-- Right Side - Form Container -->
         <div
             class="flex w-full flex-col justify-center bg-white px-4 py-12 sm:px-6 lg:w-1/2 lg:flex-none lg:px-20 xl:px-24 shadow-xl lg:shadow-none z-10">
             <div class="mx-auto w-full max-w-sm lg:w-96">
-                <!-- Brand on mobile (since left side is hidden) -->
                 <div class="lg:hidden mb-10 text-center">
                     <h1 class="font-display text-3xl font-bold text-primary">TicketApp</h1>
                 </div>
@@ -81,7 +67,6 @@
 </template>
 
 <style scoped>
-/* Optional: subtle animation on load if desired */
 @keyframes fade-in-up {
     from {
         opacity: 0;
